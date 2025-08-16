@@ -6,11 +6,14 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 class CustomGoogleMapWidget extends StatefulWidget {
   final Function(GoogleMapController)? onMapCreated;
   final Set<Marker>? initialMarkers;
-  
+  final Set<Polyline>? initialPolylines;
+
+
   const CustomGoogleMapWidget({
     super.key,
     this.onMapCreated,
     this.initialMarkers,
+    this.initialPolylines,
   });
 
   @override
@@ -21,12 +24,14 @@ class _CustomGoogleMapWidgetState extends State<CustomGoogleMapWidget> {
   late GoogleMapController _googleMapController;
   final MapService _mapService = MapService();
   Set<Marker> _markers = {};
+  Set<Polyline> _polylines = {};
   bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
     _initializeMarkers();
+    _mapService.intiPolylines(_polylines);
   }
 
   @override
@@ -59,9 +64,7 @@ class _CustomGoogleMapWidgetState extends State<CustomGoogleMapWidget> {
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
-      return const Center(
-        child: CircularProgressIndicator(),
-      );
+      return const Center(child: CircularProgressIndicator());
     }
 
     return GoogleMap(
@@ -70,6 +73,7 @@ class _CustomGoogleMapWidgetState extends State<CustomGoogleMapWidget> {
       // mapType: MapType.terrain,
       onMapCreated: _onMapCreated,
       initialCameraPosition: MapConstants.initialCameraPosition,
+      polylines: _polylines,
       // cameraTargetBounds: CameraTargetBounds(
       //   MapUtils.fixLatLngBounds(
       //     MapConstants.boundaryPoint1,
